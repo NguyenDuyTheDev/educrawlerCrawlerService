@@ -3,4 +3,5 @@ How to run: scrapyd
 
 Library / Framework:
 scrapy
+scrapyd
 pywin32
