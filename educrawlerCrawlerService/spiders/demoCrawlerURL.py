@@ -66,7 +66,8 @@ class DemoCrawlerURL(scrapy.Spider):
     'DEPTH_LIMIT': 3
   }
   
-  def __init__(self, link: str, name: str | None = None, **kwargs: Any):
+  #def __init__(self, link: str, name: str | None = None, **kwargs: Any):
+  def __init__(self, link: str, name: Optional[str] = None, **kwargs: Any):   
     super(DemoCrawlerURL, self).__init__(name, **kwargs)
 
     #self.allowed_file_format = user_settings["ALLOWED_FILE_FORMAT"]

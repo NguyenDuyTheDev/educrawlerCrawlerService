@@ -50,12 +50,6 @@ RANDOMIZE_DOWNLOAD_DELAY = True
 #    "educrawlerCrawlerService.middlewares.EducrawlercrawlerserviceSpiderMiddleware": 543,
 #}
 
-# Enable or disable downloader middlewares
-# See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    "educrawlerCrawlerService.middlewares.EducrawlercrawlerserviceDownloaderMiddleware": 543,
-#}
-
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
 #EXTENSIONS = {
@@ -96,3 +90,17 @@ TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
 
 DEPTH_LIMIT = 3
+
+SCRAPEOPS_API_KEY = 'fd0f86ec-d45d-4216-b15c-24efb1a68648'
+
+EXTENSIONS = {
+    'scrapeops_scrapy.extension.ScrapeOpsMonitor': 500, 
+}
+
+# Enable or disable downloader middlewares
+# See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
+DOWNLOADER_MIDDLEWARES = {
+    #"educrawlerCrawlerService.middlewares.EducrawlercrawlerserviceDownloaderMiddleware": 543,
+    'scrapeops_scrapy.middleware.retry.RetryMiddleware': 550,
+    'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
+}
