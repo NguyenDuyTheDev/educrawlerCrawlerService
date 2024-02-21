@@ -6,7 +6,7 @@
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
-from educrawlerAPI import Singleton
+from databaseAPI import Singleton
 
 class EducrawlercrawlerservicePipeline:
   def process_item(self, item, spider):
