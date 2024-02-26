@@ -95,8 +95,8 @@ class DemoCrawlerURL(scrapy.Spider):
         errback=self.errback_httpbin,
       )
       
-  def closed(self):
-    print("Crawl Url " + self.start_urls[0] + " Completed!")
+  #def closed(self):
+  #  print("Crawl Url " + self.start_urls[0] + " Completed!")
       
   def parse(self, response):
     converted_headers = self.convert(response.headers)

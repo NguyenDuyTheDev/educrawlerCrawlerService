@@ -20,6 +20,7 @@ class DemoPipeline:
     pass
   
   def close_spider(self, spider):
+    print("Crawl Url " + spider.start_urls[0] + " Completed!")
     pass
   
   def process_item(self, item, spider):
