@@ -24,7 +24,6 @@ class DemoPipeline:
   
   def process_item(self, item, spider):
     if item["crawlerType"] != "demo":
-      print("Not Demo")
       return item
     print("Demo Pipeline is working!")
     

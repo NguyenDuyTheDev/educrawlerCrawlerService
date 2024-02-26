@@ -5,3 +5,5 @@ Library / Framework:
 scrapy
 scrapyd
 pywin32
+scrapeops_scrapy
+psycopg2
