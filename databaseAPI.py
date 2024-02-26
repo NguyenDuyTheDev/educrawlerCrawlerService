@@ -741,3 +741,37 @@ class Singleton(metaclass=SingletonMeta):
       self.createWebpageSpiderCrawlRules(spiderID=spider_ID, crawlRuleId=crawlRule_ID)
       
     return (True, "Create Webpage Spider Complete")
+  
+  def updateSpiderWhenClosingViaURl(self, url):
+    sql_select_command = '''
+    SELECT *
+    FROM public."Spider"
+    WHERE and public."Spider"."Url" = '%s';
+    ''' % (url)
+  
+    try:
+      self.cur.execute(sql_select_command)
+      result = self.cur.fetchone()
+      if (result):
+        current = datetime.now()
+        reformatted_current = current.strftime("%m-%d-%Y %H:%M:%S")
+        
+        sql_select_command = '''
+        UPDATE public."Spider"
+        SET "JobId" = '',
+        "LastEndDate" = TIMESTAMP '%s',
+        WHERE "ID" = %s;            
+        ''' % (reformatted_current, result[0])        
+        
+      else:
+        return (False, "No Webpage Spider Exist")
+    except:
+      return (False, "Error when fetching data")
+    
+    try:
+      self.cur.execute(sql_select_command)
+      self.connection.commit()
+    except:
+      return (False, "Error when assigning data")
+    
+    return (True, "Update Spider Closing Status Successfully") 

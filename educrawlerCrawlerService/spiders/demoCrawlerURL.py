@@ -9,6 +9,8 @@ from twisted.internet.error import TimeoutError, TCPTimedOutError
 from educrawlerCrawlerService.utils import CssSelectorGenerator, CSSAttributeType, CSSContentType, countExistedTimes, removeEmptySpaceParagraph, removeHTMLTag, removeEmptyLine, countLetterInParagraph, countExistedTimesTokenize
 import math
 
+from scrapy import signals
+
 class DemoCrawlerURL(scrapy.Spider):
   name = "demoCrawlerURL"
   allowed_domains = []
@@ -86,6 +88,12 @@ class DemoCrawlerURL(scrapy.Spider):
     #self.custom_settings["CONCURRENT_REQUESTS_PER_IP"]      = user_settings["CONCURRENT_REQUESTS_PER_IP"]
         
     #self.custom_crawl_rules = custom_crawl_rules
+
+  @classmethod
+  def from_crawler(cls, crawler, *args, **kwargs):
+    spider = super(DemoCrawlerURL, cls).from_crawler(crawler, *args, **kwargs)
+    crawler.signals.connect(spider.spider_closed, signal=signals.spider_closed)
+    return spider
     
   def start_requests(self):
     for url in self.start_urls:
@@ -94,9 +102,11 @@ class DemoCrawlerURL(scrapy.Spider):
         callback=self.parse,
         errback=self.errback_httpbin,
       )
-      
-  #def closed(self):
-  #  print("Crawl Url " + self.start_urls[0] + " Completed!")
+        
+  def spider_closed(self, spider):
+    pass
+    #print("Crawl Url " + self.start_urls[0] + " Completed!")
+    
       
   def parse(self, response):
     converted_headers = self.convert(response.headers)

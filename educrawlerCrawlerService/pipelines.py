@@ -20,7 +20,10 @@ class DemoPipeline:
     pass
   
   def close_spider(self, spider):
+    self.databaseAPI.updateSpiderWhenClosingViaURl(spider.start_urls[0])
     print("Crawl Url " + spider.start_urls[0] + " Completed!")
+    print("Spider Pineline Is Closing!")
+
     #pass
   
   def process_item(self, item, spider):
