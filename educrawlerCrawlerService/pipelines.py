@@ -21,7 +21,7 @@ class DemoPipeline:
   
   def close_spider(self, spider):
     print("Crawl Url " + spider.start_urls[0] + " Completed!")
-    pass
+    #pass
   
   def process_item(self, item, spider):
     if item["crawlerType"] != "demo":
