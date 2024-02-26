@@ -758,14 +758,18 @@ class Singleton(metaclass=SingletonMeta):
         current = datetime.now()
         reformatted_current = current.strftime("%m-%d-%Y %H:%M:%S")
         
+        totalRunTime = current - result[4]
+        totalRunTimeAsInt = totalRunTime.seconds + result[6]
+        
         sql_select_command = '''
         UPDATE public."Spider"
         SET "JobId" = '',
         "Status" = 'Available',
         "CrawlStatus" = 'Good', 
-        "LastEndDate" = TIMESTAMP '%s'
+        "LastEndDate" = TIMESTAMP '%s',
+        "RunTime" = '%s'
         WHERE "ID" = %s;            
-        ''' % (reformatted_current, result[0])   
+        ''' % (reformatted_current, totalRunTimeAsInt, result[0])   
         
       else:
         #print("Spider Found: " + url)
