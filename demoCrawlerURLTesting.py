@@ -80,3 +80,6 @@ if __name__ == '__main__':
 #scrapy crawl demoCrawlerURL -a link='https://giaoduc.net.vn/de-kiem-tra-giua-ky-cuoi-ky-trong-huyen-tinh-chung-de-co-con-phu-hop-post240982.gd'
 #curl http://localhost:6800/schedule.json -d project=default -d spider=demoCrawlerURL -d link='https://giaoduc.net.vn/sinh-vien-nao-thuoc-dien-duoc-mien-giam-hoc-phi-trong-nam-2024-post240994.gd'
 
+
+#Spider 15
+#scrapy crawl demoCrawlerURL -a link='https://giaoduc.net.vn/mot-so-dia-phuong-lam-khong-dung-quy-dinh-ve-tuyen-thang-uu-tien-vao-lop-10-post241074.gd'

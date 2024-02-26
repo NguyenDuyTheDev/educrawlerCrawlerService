@@ -743,10 +743,12 @@ class Singleton(metaclass=SingletonMeta):
     return (True, "Create Webpage Spider Complete")
   
   def updateSpiderWhenClosingViaURl(self, url):
+    print("Spider Close: " + url)
+    
     sql_select_command = '''
     SELECT *
     FROM public."Spider"
-    WHERE and public."Spider"."Url" = '%s';
+    WHERE public."Spider"."Url" = '%s';
     ''' % (url)
   
     try:
@@ -759,19 +761,25 @@ class Singleton(metaclass=SingletonMeta):
         sql_select_command = '''
         UPDATE public."Spider"
         SET "JobId" = '',
-        "LastEndDate" = TIMESTAMP '%s',
+        "Status" = 'Available',
+        "CrawlStatus" = 'Good', 
+        "LastEndDate" = TIMESTAMP '%s'
         WHERE "ID" = %s;            
-        ''' % (reformatted_current, result[0])        
+        ''' % (reformatted_current, result[0])   
         
       else:
+        #print("Spider Found: " + url)
         return (False, "No Webpage Spider Exist")
     except:
+      #print("Spider Not Found: " + url)
       return (False, "Error when fetching data")
     
     try:
       self.cur.execute(sql_select_command)
       self.connection.commit()
     except:
+      #print("Spider Assign Fail: " + url)
       return (False, "Error when assigning data")
     
+    #print("Spider Assign Success: " + url)
     return (True, "Update Spider Closing Status Successfully") 
