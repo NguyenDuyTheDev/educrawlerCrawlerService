@@ -396,7 +396,7 @@ class Singleton(metaclass=SingletonMeta):
       result = self.cur.fetchone()
       return (result[0], "Checking success")
   
-  def createArticle(self, title, domain, url, content):
+  def createArticle(self, title, domain, url, content, spider_id = None):
     #Check if existed
     sql_check_command = '''
     SELECT * FROM public."Article" WHERE "Url" = '%s';
@@ -407,10 +407,16 @@ class Singleton(metaclass=SingletonMeta):
     if result:
       return (False, "Article is already existed!")
     
+    sql_insert_command = ""
     #Create new article
-    sql_insert_command = '''
-    INSERT INTO public."Article" ("Domain", "Url", "Content", "Title") Values ('%s', '%s', '%s', '%s');
-    ''' % (domain, url, content, title)
+    if spider_id == None:
+      sql_insert_command = '''
+      INSERT INTO public."Article" ("Domain", "Url", "Content", "Title") Values ('%s', '%s', '%s', '%s');
+      ''' % (domain, url, content, title)      
+    else:
+      sql_insert_command = '''
+      INSERT INTO public."Article" ("Domain", "Url", "Content", "Title", "SpiderId") Values ('%s', '%s', '%s', '%s', %s);
+      ''' % (domain, url, content, title, spider_id)
 
     try:
       self.cur.execute(sql_insert_command)
@@ -420,7 +426,7 @@ class Singleton(metaclass=SingletonMeta):
     finally:
       return (True, "New article created!")
     
-  def editArticle(self, article_id, title, domain, url, content):
+  def editArticle(self, article_id, title, domain, url, content, spider_id = None):
     #Check if not existed
     sql_check_command = '''
     SELECT * FROM public."Article" WHERE "Id" = %s;
@@ -436,15 +442,29 @@ class Singleton(metaclass=SingletonMeta):
     reformatted_current = current.strftime("%m-%d-%Y %H:%M:%S")
     #print(reformatted_current)
     
-    sql_update_command = '''
-    UPDATE public."Article"
-    SET "Domain" = '%s',
-    "Url" = '%s',
-    "Content" = '%s',
-    "Title" = '%s',
-    "LastUpdate" = TIMESTAMP '%s'
-    WHERE "Id" = %s;
-    ''' % (domain, url, content, title, reformatted_current, article_id)
+    sql_update_command = ""
+    if spider_id == None:
+      sql_update_command = '''
+      UPDATE public."Article"
+      SET "Domain" = '%s',
+      "Url" = '%s',
+      "Content" = '%s',
+      "Title" = '%s',
+      "LastUpdate" = TIMESTAMP '%s',
+      "SpiderId" = NULL
+      WHERE "Id" = %s;
+      ''' % (domain, url, content, title, reformatted_current, article_id)
+    else:    
+      sql_update_command = '''
+      UPDATE public."Article"
+      SET "Domain" = '%s',
+      "Url" = '%s',
+      "Content" = '%s',
+      "Title" = '%s',
+      "LastUpdate" = TIMESTAMP '%s',
+      "SpiderId" = %s
+      WHERE "Id" = %s;
+      ''' % (domain, url, content, title, reformatted_current, spider_id, article_id)
 
     try:
       self.cur.execute(sql_update_command)
@@ -786,4 +806,44 @@ class Singleton(metaclass=SingletonMeta):
       return (False, "Error when assigning data")
     
     #print("Spider Assign Success: " + url)
+    return (True, "Update Spider Closing Status Successfully") 
+  
+  def updateSpiderWhenClosingViaID(self, spider_id):
+    sql_select_command = '''
+    SELECT *
+    FROM public."Spider"
+    WHERE public."Spider"."ID" = %s;
+    ''' % (spider_id)
+  
+    try:
+      self.cur.execute(sql_select_command)
+      result = self.cur.fetchone()
+      if (result):
+        current = datetime.now()
+        reformatted_current = current.strftime("%m-%d-%Y %H:%M:%S")
+        
+        totalRunTime = current - result[4]
+        totalRunTimeAsInt = totalRunTime.seconds + result[6]
+        
+        sql_select_command = '''
+        UPDATE public."Spider"
+        SET "JobId" = '',
+        "Status" = 'Available',
+        "CrawlStatus" = 'Good', 
+        "LastEndDate" = TIMESTAMP '%s',
+        "RunTime" = '%s'
+        WHERE "ID" = %s;            
+        ''' % (reformatted_current, totalRunTimeAsInt, spider_id)   
+        
+      else:
+        return (False, "No Webpage Spider Exist")
+    except:
+      return (False, "Error when fetching data")
+    
+    try:
+      self.cur.execute(sql_select_command)
+      self.connection.commit()
+    except:
+      return (False, "Error when assigning data")
+    
     return (True, "Update Spider Closing Status Successfully") 

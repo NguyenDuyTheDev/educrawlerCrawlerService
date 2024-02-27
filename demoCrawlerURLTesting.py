@@ -83,3 +83,5 @@ if __name__ == '__main__':
 
 #Spider 15
 #scrapy crawl demoCrawlerURL -a link='https://giaoduc.net.vn/mot-so-dia-phuong-lam-khong-dung-quy-dinh-ve-tuyen-thang-uu-tien-vao-lop-10-post241074.gd'
+
+#scrapy crawl WebpageSpider -a spider_id=15 -a link='https://giaoduc.net.vn/mot-so-dia-phuong-lam-khong-dung-quy-dinh-ve-tuyen-thang-uu-tien-vao-lop-10-post241074.gd'

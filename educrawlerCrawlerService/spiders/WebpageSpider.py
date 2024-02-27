@@ -11,8 +11,8 @@ import math
 
 from scrapy import signals
 
-class DemoCrawlerURL(scrapy.Spider):
-  name = "demoCrawlerURL"
+class WebpageSpider(scrapy.Spider):
+  name = "WebpageSpider"
   allowed_domains = []
   start_urls = []
   visited = []
@@ -68,9 +68,8 @@ class DemoCrawlerURL(scrapy.Spider):
     'DEPTH_LIMIT': 3
   }
   
-  #def __init__(self, link: str, name: str | None = None, **kwargs: Any):
-  def __init__(self, link: str, name: Optional[str] = None, **kwargs: Any):   
-    super(DemoCrawlerURL, self).__init__(name, **kwargs)
+  def __init__(self, spider_id: int, link: str, name: Optional[str] = None, **kwargs: Any):   
+    super(WebpageSpider, self).__init__(name, **kwargs)
 
     #self.allowed_file_format = user_settings["ALLOWED_FILE_FORMAT"]
     #self.allowed_keyword = user_settings["ALLOWED_KEYWORD"]
@@ -83,17 +82,13 @@ class DemoCrawlerURL(scrapy.Spider):
       self.allowed_domains.append(domain)
           
     self.download_delay                                     = 2
-    self.custom_settings["DEPTH_LIMIT"]                     = 3
-    self.spider_type = "demo"
-
-    #self.custom_settings["CONCURRENT_REQUESTS_PER_DOMAIN"]  = user_settings["CONCURRENT_REQUESTS_PER_DOMAIN"]
-    #self.custom_settings["CONCURRENT_REQUESTS_PER_IP"]      = user_settings["CONCURRENT_REQUESTS_PER_IP"]
-        
+    self.spider_db_id = spider_id
+    self.spider_type = "webpage"
     #self.custom_crawl_rules = custom_crawl_rules
 
   @classmethod
   def from_crawler(cls, crawler, *args, **kwargs):
-    spider = super(DemoCrawlerURL, cls).from_crawler(crawler, *args, **kwargs)
+    spider = super(WebpageSpider, cls).from_crawler(crawler, *args, **kwargs)
     crawler.signals.connect(spider.spider_closed, signal=signals.spider_closed)
     return spider
     
@@ -107,9 +102,7 @@ class DemoCrawlerURL(scrapy.Spider):
         
   def spider_closed(self, spider):
     pass
-    #print("Crawl Url " + self.start_urls[0] + " Completed!")
-    
-      
+          
   def parse(self, response):
     converted_headers = self.convert(response.headers)
     
@@ -144,7 +137,7 @@ class DemoCrawlerURL(scrapy.Spider):
       # Check before save
       if len(self.allowed_keyword) == 0 or (len(self.allowed_keyword) > 0 and academic_keywords > 0):
         items = {
-          "crawlerType": "demo",
+          "crawlerType": "webpage",
           "domain": self.allowed_domains[0],
           "url": response.url,
           "academic_keyword": academic_keywords,
@@ -152,7 +145,8 @@ class DemoCrawlerURL(scrapy.Spider):
           "title": websiteTitle,
           "reformatted_content": raw_content,
           "total_words": total_words,
-          "minimum_keywords": minimum_keywords
+          "minimum_keywords": minimum_keywords,
+          "spider_id": self.spider_db_id
         }
         yield items
         
