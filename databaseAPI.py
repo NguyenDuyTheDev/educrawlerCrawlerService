@@ -31,7 +31,7 @@ class SingletonMeta(type):
     self.cur.close()
     self.connection.close()
     
-    print('Close db connection!')
+    #print('Close db connection!')
     return
       
 class Singleton(metaclass=SingletonMeta):
@@ -434,7 +434,7 @@ class Singleton(metaclass=SingletonMeta):
     #Update article
     current = datetime.now()
     reformatted_current = current.strftime("%m-%d-%Y %H:%M:%S")
-    print(reformatted_current)
+    #print(reformatted_current)
     
     sql_update_command = '''
     UPDATE public."Article"
@@ -594,7 +594,7 @@ class Singleton(metaclass=SingletonMeta):
     sql_check_command = '''
     SELECT * FROM public."Spider" WHERE "ID" = %s;
     ''' % (spiderID)
-    print(spiderID)
+    #print(spiderID)
     
     try:
       self.cur.execute(sql_check_command)
@@ -743,7 +743,7 @@ class Singleton(metaclass=SingletonMeta):
     return (True, "Create Webpage Spider Complete")
   
   def updateSpiderWhenClosingViaURl(self, url):
-    print("Spider Close: " + url)
+    #print("Spider Close: " + url)
     
     sql_select_command = '''
     SELECT *

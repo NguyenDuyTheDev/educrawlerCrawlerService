@@ -257,7 +257,7 @@ def countExistedTimesTokenize(text : str, word : str) -> int:
               break
           if isSimilar == True:
             count += 1
-            print(index)
+            #print(index)
             index += subIndex
     index += 1
   return count
