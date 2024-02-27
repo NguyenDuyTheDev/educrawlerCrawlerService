@@ -61,7 +61,8 @@ RANDOMIZE_DOWNLOAD_DELAY = True
 ITEM_PIPELINES = {
   "educrawlerCrawlerService.pipelines.EducrawlercrawlerservicePipeline": 300,
   "educrawlerCrawlerService.pipelines.DemoPipeline": 300,
-  "educrawlerCrawlerService.pipelines.WebpagePineline": 300
+  "educrawlerCrawlerService.pipelines.WebpagePineline": 300,
+  "educrawlerCrawlerService.pipelines.WebsitePineline": 300
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

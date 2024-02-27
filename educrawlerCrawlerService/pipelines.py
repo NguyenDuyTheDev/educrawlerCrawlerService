@@ -101,3 +101,48 @@ class WebpagePineline:
       )
       
     return item
+  
+class WebsitePineline:
+  def __init__(self) -> None:
+    self.databaseAPI = Singleton()
+  
+  def open_spider(self, spider):
+    pass
+  
+  def close_spider(self, spider):
+    if spider.spider_type == "website":
+      self.databaseAPI.updateSpiderWhenClosingViaID(spider.spider_db_id)
+  
+  def process_item(self, item, spider):
+    if item["crawlerType"] != "website":
+      return item
+    
+    isExisted = self.databaseAPI.getArticleByUrl(item["url"])
+    
+    title = ""
+    if item["title"] is not None: 
+      title = item["title"].replace("'", "").replace('"', '')
+    
+    # Save
+    if len(item["reformatted_content"]) == 0:
+      return item
+    
+    if isExisted[0] == True:
+      self.databaseAPI.editArticle(
+        article_id=isExisted[1]["Id"],
+        title=title,
+        domain=item["domain"],
+        url=item["url"],
+        content=item["reformatted_content"],
+        spider_id=spider.spider_db_id
+      )
+    else:
+      self.databaseAPI.createArticle(
+        title=title,
+        domain=item["domain"],
+        url=item["url"],
+        content=item["reformatted_content"],       
+        spider_id=spider.spider_db_id 
+      )
+      
+    return item
