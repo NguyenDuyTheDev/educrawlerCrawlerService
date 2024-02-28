@@ -64,9 +64,11 @@ class WebsiteSpider(scrapy.Spider):
     "mailto", "javascript", "commentbox", "tel"
   ] 
   
+  
   custom_settings = {
-    'DEPTH_LIMIT': 1
+    'CONCURRENT_REQUESTS_PER_IP': 0
   }
+  
   
   def __init__(self, 
                spider_id: int, 
