@@ -237,30 +237,33 @@ def countExistedTimes(text : str, word : str) -> int:
   return count
 
 def countExistedTimesTokenize(text : str, word : str) -> int:
-  textAsTokens = text.lower().split(' ')
-  wordAsTokens = word.lower().split(' ')
-  
-  count = 0
-  index = 0
-  while index < len(textAsTokens):
-    if textAsTokens[index] == wordAsTokens[0]:
-      if len(wordAsTokens) == 1:
-        count += 1
-      else:
-        remainingWord = len(textAsTokens) - (index) - len(wordAsTokens)
-        
-        if remainingWord >= 0:
-          isSimilar = True
-          for subIndex in range(1, len(wordAsTokens)):
-            if textAsTokens[index + subIndex] != wordAsTokens[subIndex]:
-              isSimilar = False
-              break
-          if isSimilar == True:
-            count += 1
-            #print(index)
-            index += subIndex
-    index += 1
-  return count
+  try:
+    textAsTokens = text.lower().split(' ')
+    wordAsTokens = word.lower().split(' ')
+    
+    count = 0
+    index = 0
+    while index < len(textAsTokens):
+      if textAsTokens[index] == wordAsTokens[0]:
+        if len(wordAsTokens) == 1:
+          count += 1
+        else:
+          remainingWord = len(textAsTokens) - (index) - len(wordAsTokens)
+          
+          if remainingWord >= 0:
+            isSimilar = True
+            for subIndex in range(1, len(wordAsTokens)):
+              if textAsTokens[index + subIndex] != wordAsTokens[subIndex]:
+                isSimilar = False
+                break
+            if isSimilar == True:
+              count += 1
+              #print(index)
+              index += subIndex
+      index += 1
+    return count
+  except:
+    return 0
 
 def firstLetterOnly(text: str) -> str:
   words = text.split(' ')
