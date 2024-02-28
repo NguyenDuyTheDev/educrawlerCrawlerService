@@ -112,6 +112,10 @@ class WebsitePineline:
   def close_spider(self, spider):
     if spider.spider_type == "website":
       self.databaseAPI.updateSpiderWhenClosingViaID(spider.spider_db_id)
+      total_article = self.databaseAPI.getSpiderTotalAriticle(spider_id=spider.spider_db_id)
+      if total_article[0] == True:
+        self.databaseAPI.setSpiderTotalAriticle(spider_id=spider.spider_db_id, total_article=total_article[1])
+      self.databaseAPI.increaseWebsiteSpiderCrawl(spider_id=spider.spider_db_id, crawl_success=spider.crawl_success, crawl_fail=spider.crawl_fail )
   
   def process_item(self, item, spider):
     if item["crawlerType"] != "website":
@@ -128,7 +132,7 @@ class WebsitePineline:
       return item
     
     if isExisted[0] == True:
-      self.databaseAPI.editArticle(
+      res = self.databaseAPI.editArticle(
         article_id=isExisted[1]["Id"],
         title=title,
         domain=item["domain"],
@@ -136,13 +140,22 @@ class WebsitePineline:
         content=item["reformatted_content"],
         spider_id=spider.spider_db_id
       )
+      if res[0] == True:
+        spider.crawl_success += 1
+      else:
+        spider.crawl_fail += 1
+
     else:
-      self.databaseAPI.createArticle(
+      res = self.databaseAPI.createArticle(
         title=title,
         domain=item["domain"],
         url=item["url"],
         content=item["reformatted_content"],       
         spider_id=spider.spider_db_id 
       )
+      if res[0] == True:
+        spider.crawl_success += 1
+      else:
+        self.crawl_fail += 1
       
     return item

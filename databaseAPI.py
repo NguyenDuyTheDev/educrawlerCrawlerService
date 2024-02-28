@@ -851,3 +851,51 @@ class Singleton(metaclass=SingletonMeta):
       return (False, "Error when assigning data")
     
     return (True, "Update Spider Closing Status Successfully") 
+  
+  def getSpiderTotalAriticle(self, spider_id):
+    sql_select_command = '''
+    SELECT count(*)
+    FROM public."Article"
+    WHERE "SpiderId" = %s;
+    ''' % (spider_id)
+  
+    try:
+      self.cur.execute(sql_select_command)
+      result = self.cur.fetchone()
+      if (result):
+        return (True, result[0])
+      else:
+        return (False, "Error when fetching data")
+    except:
+      return (False, "Error when fetching data")
+    
+  def setSpiderTotalAriticle(self, spider_id, total_article):  
+    sql_command = '''
+    UPDATE public."WebsiteSpider"
+    SET "TotalPage" = %s
+    WHERE "ID" = %s;            
+    ''' % (total_article, spider_id)   
+  
+    try:
+      self.cur.execute(sql_command)
+      self.connection.commit()
+    except:
+      self.cur.execute("ROLLBACK;")
+      return (False, "Error when fetching data")
+    return (True, "Update success")
+  
+  def increaseWebsiteSpiderCrawl(self, spider_id, crawl_success, crawl_fail):  
+    sql_command = '''
+    UPDATE public."WebsiteSpider"
+    SET "CrawlSuccess" = "CrawlSuccess" + %s,
+    "CrawlFail" = "CrawlFail" + %s
+    WHERE "ID" = %s;            
+    ''' % (crawl_success, crawl_fail, spider_id)   
+  
+    try:
+      self.cur.execute(sql_command)
+      self.connection.commit()
+    except:
+      self.cur.execute("ROLLBACK;")
+      return (False, "Error when fetching data")
+    return (True, "Update success")

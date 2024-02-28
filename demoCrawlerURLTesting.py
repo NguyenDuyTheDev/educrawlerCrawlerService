@@ -91,3 +91,5 @@ if __name__ == '__main__':
 #curl https://educrawlercrawlerservice.onrender.com//schedule.json -d project=default -d spider=WebsiteSpider -d link='https://giaoduc.net.vn/chi-tiet-diem-chuan-cac-nganh-cua-hoc-vien-tai-chinh-5-nam-qua-post241010.gd' -d spider_id=16
 
 #scrapy crawl WebsiteSpider -a spider_id=16 -a link='https://giaoduc.net.vn/chi-tiet-diem-chuan-cac-nganh-cua-hoc-vien-tai-chinh-5-nam-qua-post241010.gd' -a graphDeep=1 -a delay=2.0
+
+#scrapy crawl WebsiteSpider -a spider_id=21 -a link='https://giaoduc.net.vn/nha-khoa-hoc-tre-ve-cong-tac-tai-dhqg-tphcm-se-duoc-dai-ngo-ra-sao-post241148.gd' -a graphDeep=1 -a delay=2.0

@@ -95,6 +95,8 @@ class WebsiteSpider(scrapy.Spider):
     self.custom_settings["CONCURRENT_REQUESTS_PER_DOMAIN"]  = maxThread
     self.spider_db_id = spider_id
     self.spider_type = "website"
+    self.crawl_success = 0
+    self.crawl_fail = 0
     #self.custom_crawl_rules = custom_crawl_rules
 
   @classmethod
@@ -148,7 +150,7 @@ class WebsiteSpider(scrapy.Spider):
           academic_keywords += count
           
       # Check before save
-      if len(self.allowed_keyword) == 0 or (len(self.allowed_keyword) > 0 and academic_keywords > 0):
+      if (len(self.allowed_keyword) == 0 or (len(self.allowed_keyword) > 0 and academic_keywords > 0)) and (len(raw_content) > 0):
         items = {
           "crawlerType": "website",
           "domain": self.allowed_domains[0],

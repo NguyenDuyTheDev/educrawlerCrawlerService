@@ -135,7 +135,7 @@ class WebpageSpider(scrapy.Spider):
           academic_keywords += count
           
       # Check before save
-      if len(self.allowed_keyword) == 0 or (len(self.allowed_keyword) > 0 and academic_keywords > 0):
+      if (len(self.allowed_keyword) == 0 or (len(self.allowed_keyword) > 0 and academic_keywords > 0)) and (len(raw_content) > 0):
         items = {
           "crawlerType": "webpage",
           "domain": self.allowed_domains[0],
