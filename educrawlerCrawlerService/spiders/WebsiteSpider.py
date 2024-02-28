@@ -71,7 +71,7 @@ class WebsiteSpider(scrapy.Spider):
   def __init__(self, 
                spider_id: int, 
                link: str, 
-               delay: int = 2, 
+               delay: float = 2.0, 
                graphDeep: int = 2, 
                maxThread: int = 1,
                name: Optional[str] = None, 
@@ -88,7 +88,7 @@ class WebsiteSpider(scrapy.Spider):
       domain = '{uri.netloc}'.format(uri=parsed_uri)
       self.allowed_domains.append(domain)
           
-    self.download_delay                                     = delay
+    self.download_delay                                     = float(delay)
     self.custom_settings["DEPTH_LIMIT"]                     = graphDeep
     self.custom_settings["CONCURRENT_REQUESTS_PER_DOMAIN"]  = maxThread
     self.spider_db_id = spider_id
