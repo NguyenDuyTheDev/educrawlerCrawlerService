@@ -87,3 +87,7 @@ if __name__ == '__main__':
 #scrapy crawl WebpageSpider -a spider_id=15 -a link='https://giaoduc.net.vn/mot-so-dia-phuong-lam-khong-dung-quy-dinh-ve-tuyen-thang-uu-tien-vao-lop-10-post241074.gd'
 #scrapy crawl WebpageSpider -a spider_id=16 -a link='https://giaoduc.net.vn/chi-tiet-diem-chuan-cac-nganh-cua-hoc-vien-tai-chinh-5-nam-qua-post241010.gd'
 #scrapy crawl WebsiteSpider -a spider_id=16 -a link='https://giaoduc.net.vn/chi-tiet-diem-chuan-cac-nganh-cua-hoc-vien-tai-chinh-5-nam-qua-post241010.gd'
+
+#curl https://educrawlercrawlerservice.onrender.com//schedule.json -d project=default -d spider=WebsiteSpider -d link='https://giaoduc.net.vn/chi-tiet-diem-chuan-cac-nganh-cua-hoc-vien-tai-chinh-5-nam-qua-post241010.gd' -d spider_id=16
+
+#scrapy crawl WebsiteSpider -a spider_id=16 -a link='https://giaoduc.net.vn/chi-tiet-diem-chuan-cac-nganh-cua-hoc-vien-tai-chinh-5-nam-qua-post241010.gd' -a graphDeep=1

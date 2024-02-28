@@ -68,7 +68,14 @@ class WebsiteSpider(scrapy.Spider):
     'DEPTH_LIMIT': 1
   }
   
-  def __init__(self, spider_id: int, link: str, name: Optional[str] = None, **kwargs: Any):   
+  def __init__(self, 
+               spider_id: int, 
+               link: str, 
+               delay: float = 2.5, 
+               graphDeep: int = 2, 
+               maxThread: int = 1,
+               name: Optional[str] = None, 
+               **kwargs: Any):   
     super(WebsiteSpider, self).__init__(name, **kwargs)
 
     #self.allowed_file_format = user_settings["ALLOWED_FILE_FORMAT"]
@@ -81,8 +88,9 @@ class WebsiteSpider(scrapy.Spider):
       domain = '{uri.netloc}'.format(uri=parsed_uri)
       self.allowed_domains.append(domain)
           
-    self.download_delay                                     = 2
-    self.custom_settings["DEPTH_LIMIT"]                     = 1
+    self.download_delay                                     = delay
+    self.custom_settings["DEPTH_LIMIT"]                     = graphDeep
+    self.custom_settings["CONCURRENT_REQUESTS_PER_DOMAIN"]  = maxThread
     self.spider_db_id = spider_id
     self.spider_type = "website"
     #self.custom_crawl_rules = custom_crawl_rules
