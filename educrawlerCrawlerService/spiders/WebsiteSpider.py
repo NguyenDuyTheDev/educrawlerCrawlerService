@@ -71,7 +71,7 @@ class WebsiteSpider(scrapy.Spider):
   def __init__(self, 
                spider_id: int, 
                link: str, 
-               delay: float = 2.5, 
+               delay: int = 2, 
                graphDeep: int = 2, 
                maxThread: int = 1,
                name: Optional[str] = None, 
