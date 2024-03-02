@@ -1,6 +1,7 @@
 from typing import Any, Optional
 import scrapy
 from scrapy.http import Response
+from scrapy.settings import BaseSettings
 from scrapy.utils.log import configure_logging
 from urllib.parse import urlparse, urljoin
 from scrapy.spidermiddlewares.httperror import HttpError
@@ -60,13 +61,57 @@ class WebsiteSpider(scrapy.Spider):
     "kết quả",
   ]
 
+  basic_keyword = [
+    "giáo dục",
+    "đại học",
+    "trường",
+    "học",
+    "dạy",
+    "phổ thông",
+    "tiểu học",
+    "mầm non",
+    "giáo viên",
+    "đào tạo",
+    "nghề",
+    "sinh viên",
+    "học sinh",
+    "ngành",
+    "khoa",
+    "trung học",
+    "môn",
+    "ngữ văn",
+    "bài tập",
+    "chuyên",
+    "học đường",
+    "trải nghiệm",
+    "vận động",
+    "kĩ năng",
+    "kiến trúc",
+    "học tập",
+    "kĩ năng mềm",
+    "rèn luyện",
+    "giảng viên",
+    "sư phạm",
+    "tư duy",
+    "phân tích",
+    "thực nghiệm",
+    "giải quyết vấn đề",
+    "toán",
+    "tự học",
+    "hướng dẫn",
+    "đánh giá",
+    "kết quả",
+  ]
+
   uncrawlable_link = [
     "mailto", "javascript", "commentbox", "tel"
   ] 
   
   
   custom_settings = {
-    'CONCURRENT_REQUESTS_PER_IP': 0
+    'CONCURRENT_REQUESTS_PER_IP': 0,
+    'DEPTH_LIMIT': 3,
+    'CONCURRENT_REQUESTS_PER_DOMAIN': 4
   }
   
   
@@ -76,6 +121,7 @@ class WebsiteSpider(scrapy.Spider):
                delay: float = 2.0, 
                graphDeep: int = 2, 
                maxThread: int = 1,
+               keywords: str = "[]",
                name: Optional[str] = None, 
                **kwargs: Any):   
     super(WebsiteSpider, self).__init__(name, **kwargs)
@@ -91,19 +137,39 @@ class WebsiteSpider(scrapy.Spider):
       self.allowed_domains.append(domain)
           
     self.download_delay                                     = float(delay)
-    self.custom_settings["DEPTH_LIMIT"]                     = graphDeep
-    self.custom_settings["CONCURRENT_REQUESTS_PER_DOMAIN"]  = maxThread
+    #self.custom_settings["DEPTH_LIMIT"]                     = graphDeep
+    #self.custom_settings["CONCURRENT_REQUESTS_PER_DOMAIN"]  = maxThread
     self.spider_db_id = spider_id
     self.spider_type = "website"
     self.crawl_success = 0
     self.crawl_fail = 0
+    self.custom_depth_limit = graphDeep
+    self.custom_concurrent = maxThread
     #self.custom_crawl_rules = custom_crawl_rules
+
+    try:
+      if len(keywords) > 2:
+        keywordsAsList = keywords.strip('[]').split(',')
+        print(keywordsAsList, type(keywordsAsList))
+        self.allowed_keyword = keywordsAsList
+    except:
+      self.allowed_keyword = self.basic_keyword
 
   @classmethod
   def from_crawler(cls, crawler, *args, **kwargs):
     spider = super(WebsiteSpider, cls).from_crawler(crawler, *args, **kwargs)
+    spider.settings.set(
+      "DEPTH_LIMIT", spider.custom_depth_limit, priority="spider"
+    )
+    spider.settings.set(
+      "CONCURRENT_REQUESTS_PER_DOMAIN", spider.custom_concurrent, priority="spider"
+    )
+    
     crawler.signals.connect(spider.spider_closed, signal=signals.spider_closed)
+
     return spider
+  
+
     
   def start_requests(self):
     for url in self.start_urls:

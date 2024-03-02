@@ -60,6 +60,48 @@ class WebpageSpider(scrapy.Spider):
     "kết quả",
   ]
 
+  basic_keyword = [
+    "giáo dục",
+    "đại học",
+    "trường",
+    "học",
+    "dạy",
+    "phổ thông",
+    "tiểu học",
+    "mầm non",
+    "giáo viên",
+    "đào tạo",
+    "nghề",
+    "sinh viên",
+    "học sinh",
+    "ngành",
+    "khoa",
+    "trung học",
+    "môn",
+    "ngữ văn",
+    "bài tập",
+    "chuyên",
+    "học đường",
+    "trải nghiệm",
+    "vận động",
+    "kĩ năng",
+    "kiến trúc",
+    "học tập",
+    "kĩ năng mềm",
+    "rèn luyện",
+    "giảng viên",
+    "sư phạm",
+    "tư duy",
+    "phân tích",
+    "thực nghiệm",
+    "giải quyết vấn đề",
+    "toán",
+    "tự học",
+    "hướng dẫn",
+    "đánh giá",
+    "kết quả",
+  ]
+
   uncrawlable_link = [
     "mailto", "javascript", "commentbox", "tel"
   ] 
@@ -68,11 +110,17 @@ class WebpageSpider(scrapy.Spider):
     'DEPTH_LIMIT': 3
   }
   
-  def __init__(self, spider_id: int, link: str, name: Optional[str] = None, **kwargs: Any):   
+  def __init__(
+    self, 
+    spider_id: int, 
+    link: str, 
+    keywords: str = "[]",
+    name: Optional[str] = None, 
+    **kwargs: Any
+    ):   
     super(WebpageSpider, self).__init__(name, **kwargs)
 
     #self.allowed_file_format = user_settings["ALLOWED_FILE_FORMAT"]
-    #self.allowed_keyword = user_settings["ALLOWED_KEYWORD"]
 
     self.start_urls.append(link)
         
@@ -85,6 +133,14 @@ class WebpageSpider(scrapy.Spider):
     self.spider_db_id = spider_id
     self.spider_type = "webpage"
     #self.custom_crawl_rules = custom_crawl_rules
+    
+    try:
+      if len(keywords) > 2:
+        keywordsAsList = keywords.strip('[]').split(',')
+        self.allowed_keyword = keywordsAsList
+    except:
+      self.allowed_keyword = self.basic_keyword
+      
 
   @classmethod
   def from_crawler(cls, crawler, *args, **kwargs):
