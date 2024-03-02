@@ -140,7 +140,7 @@ class WebpageSpider(scrapy.Spider):
         self.allowed_keyword = keywordsAsList
     except:
       self.allowed_keyword = self.basic_keyword
-      
+    print(self.allowed_keyword)
 
   @classmethod
   def from_crawler(cls, crawler, *args, **kwargs):
