@@ -156,6 +156,6 @@ class WebsitePineline:
       if res[0] == True:
         spider.crawl_success += 1
       else:
-        self.crawl_fail += 1
+        spider.crawl_fail += 1
       
     return item
