@@ -137,7 +137,9 @@ class WebpageSpider(scrapy.Spider):
     try:
       if len(keywords) > 2:
         keywordsAsList = keywords.strip('[]').split(',')
-        self.allowed_keyword = keywordsAsList
+        print(keywordsAsList, type(keywordsAsList))
+        if len(keywordsAsList) > 0:
+          self.allowed_keyword = keywordsAsList
     except:
       self.allowed_keyword = self.basic_keyword
     print(self.allowed_keyword)
