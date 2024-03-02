@@ -148,11 +148,10 @@ class WebsiteSpider(scrapy.Spider):
     #self.custom_crawl_rules = custom_crawl_rules
 
     try:
-      if len(keywords) > 2:
-        keywordsAsList = keywords.strip('[]').split(',')
-        print(keywordsAsList, type(keywordsAsList))
-        if len(keywordsAsList) > 0:
-          self.allowed_keyword = keywordsAsList
+      keywordsAsList = keywords.split(',')
+      print(keywordsAsList, type(keywordsAsList))
+      if len(keywordsAsList) > 0:
+        self.allowed_keyword = keywordsAsList
     except:
       self.allowed_keyword = self.basic_keyword
     print(self.allowed_keyword)
