@@ -110,12 +110,15 @@ class WebpageSpider(scrapy.Spider):
     'DEPTH_LIMIT': 3
   }
   
+  crawl_rule = []
+  
   def __init__(
     self, 
     spider_id: int, 
     link: str, 
     keywords: str = "",
     name: Optional[str] = None, 
+    crawlRule: str = "",
     **kwargs: Any
     ):   
     super(WebpageSpider, self).__init__(name, **kwargs)
@@ -142,6 +145,10 @@ class WebpageSpider(scrapy.Spider):
     except:
       self.allowed_keyword = self.basic_keyword
     print(self.allowed_keyword)
+    
+    crawlRuleAsList = crawlRule.split(",")
+    self.crawl_rule = crawlRuleAsList
+    print(self.crawl_rule)
 
   @classmethod
   def from_crawler(cls, crawler, *args, **kwargs):
