@@ -176,6 +176,11 @@ class WebpageSpider(scrapy.Spider):
       # Crawl Basic Data
       websiteTitle = response.css('title::text').get()
       content   = response.css('p').getall()
+      
+      user_define_content = []
+      for rule in self.crawl_rule:
+        user_define_content.append(response.css(rule).getall())
+      content.append(user_define_content)   
           
       # Content Checking and Reformatted
       found_keywords = []
