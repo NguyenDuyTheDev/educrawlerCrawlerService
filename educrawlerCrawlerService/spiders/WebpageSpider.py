@@ -180,7 +180,7 @@ class WebpageSpider(scrapy.Spider):
       user_define_content = []
       for rule in self.crawl_rule:
         user_define_content.append(response.css(rule).getall())
-      content.append(user_define_content)   
+      content = content + user_define_content
           
       # Content Checking and Reformatted
       found_keywords = []
