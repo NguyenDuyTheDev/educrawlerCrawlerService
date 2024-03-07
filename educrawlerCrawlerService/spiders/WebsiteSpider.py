@@ -7,11 +7,10 @@ from urllib.parse import urlparse, urljoin
 from scrapy.spidermiddlewares.httperror import HttpError
 from twisted.internet.error import DNSLookupError
 from twisted.internet.error import TimeoutError, TCPTimedOutError
-from educrawlerCrawlerService.utils import CssSelectorGenerator, CSSAttributeType, CSSContentType, countExistedTimes, removeEmptySpaceParagraph, removeHTMLTag, removeEmptyLine, countLetterInParagraph, countExistedTimesTokenize
+from educrawlerCrawlerService.utils import CssSelectorGenerator, CSSAttributeType, CSSContentType, countExistedTimes, removeEmptySpaceParagraph, removeHTMLTag, removeEmptyLine, countLetterInParagraph, countExistedTimesTokenize, triggerCrawlingService
 import math
 
 from datetime import datetime
-import requests
 
 from scrapy import signals
 
@@ -191,7 +190,10 @@ class WebsiteSpider(scrapy.Spider):
     # Service Trigger (To keep service alway alive while running)
     datetime_str = datetime.now()
     if (datetime_str.minute % 15 == 0 and datetime_str.second == 0):
-      r = requests.get('https://educrawlercrawlerservice.onrender.com/')
+      try:
+        triggerCrawlingService()
+      except:
+        print("Error when trigger crawling service")
     
     # Parse
     converted_headers = self.convert(response.headers)
