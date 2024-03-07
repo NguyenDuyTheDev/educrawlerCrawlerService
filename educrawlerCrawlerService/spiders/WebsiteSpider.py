@@ -184,8 +184,7 @@ class WebsiteSpider(scrapy.Spider):
   def spider_closed(self, spider):
     pass
           
-  def parse(self, response):    
-    # Parse
+  def parse(self, response):
     converted_headers = self.convert(response.headers)
     
     if ("text/html" in converted_headers["Content-Type"]):
