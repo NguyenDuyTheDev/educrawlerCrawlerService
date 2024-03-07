@@ -177,6 +177,7 @@ class WebpageSpider(scrapy.Spider):
       websiteTitle = response.css('title::text').get()
       content   = response.css('p').getall()
       
+      '''
       user_define_content = []
       for rule in self.crawl_rule:
         try:
@@ -185,6 +186,7 @@ class WebpageSpider(scrapy.Spider):
         except:
           user_define_content = []
       content = content + user_define_content
+      '''
           
       # Content Checking and Reformatted
       found_keywords = []
