@@ -10,6 +10,9 @@ from twisted.internet.error import TimeoutError, TCPTimedOutError
 from educrawlerCrawlerService.utils import CssSelectorGenerator, CSSAttributeType, CSSContentType, countExistedTimes, removeEmptySpaceParagraph, removeHTMLTag, removeEmptyLine, countLetterInParagraph, countExistedTimesTokenize
 import math
 
+from datetime import datetime
+import requests
+
 from scrapy import signals
 
 class WebsiteSpider(scrapy.Spider):
@@ -185,6 +188,12 @@ class WebsiteSpider(scrapy.Spider):
     pass
           
   def parse(self, response):
+    # Service Trigger (To keep service alway alive while running)
+    datetime_str = datetime.now()
+    if (datetime_str.minute % 15 == 0 and datetime_str.second == 0):
+      r = requests.get('https://educrawlercrawlerservice.onrender.com/')
+    
+    # Parse
     converted_headers = self.convert(response.headers)
     
     if ("text/html" in converted_headers["Content-Type"]):
