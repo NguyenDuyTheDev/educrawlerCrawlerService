@@ -178,9 +178,12 @@ class WebpageSpider(scrapy.Spider):
       content   = response.css('p').getall()
       
       user_define_content = []
-      for rule in self.crawl_rule:
-        if response.css(rule):
-          user_define_content = user_define_content + response.css(rule).getall()
+      try:
+        for rule in self.crawl_rule:
+          if response.css(rule):
+            user_define_content = user_define_content + response.css(rule).getall()
+      except:
+        user_define_content = user_define_content
       content = content + user_define_content
           
       # Content Checking and Reformatted
