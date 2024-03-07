@@ -180,7 +180,8 @@ class WebpageSpider(scrapy.Spider):
       user_define_content = []
       for rule in self.crawl_rule:
         try:
-          user_define_content = user_define_content + response.css(rule).getall()
+          if response.css(rule):
+            user_define_content = user_define_content + response.css(rule).getall()
         except:
           user_define_content = []
       content = content + user_define_content
