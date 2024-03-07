@@ -221,7 +221,7 @@ class WebpageSpider(scrapy.Spider):
         
   def errback_httpbin(self, failure):
     # log all failures
-    self.logger.error(repr(failure))
+    # self.logger.error(repr(failure))
 
     if failure.check(HttpError):
       # these exceptions come from HttpError spider middleware
