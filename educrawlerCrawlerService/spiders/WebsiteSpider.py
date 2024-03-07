@@ -194,7 +194,8 @@ class WebsiteSpider(scrapy.Spider):
     datetime_str = datetime.now()
     if (datetime_str.minute % 15 == 0 and datetime_str.second == 0):
       try:
-        yield scrapy.Request('https://educrawlercrawlerservice.onrender.com/', callback=self.parseTrigger) 
+        print(0)
+        #yield scrapy.Request('https://educrawlercrawlerservice.onrender.com/', callback=self.parseTrigger) 
       except:
         print("Error when trigger crawling service")
     
