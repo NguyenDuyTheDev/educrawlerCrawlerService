@@ -107,11 +107,8 @@ class WebsiteSpider(scrapy.Spider):
     "mailto", "javascript", "commentbox", "tel"
   ] 
   
-  
   custom_settings = {
-    'CONCURRENT_REQUESTS_PER_IP': 0,
     'DEPTH_LIMIT': 3,
-    'CONCURRENT_REQUESTS_PER_DOMAIN': 4
   }
   
   
@@ -156,7 +153,6 @@ class WebsiteSpider(scrapy.Spider):
       self.allowed_keyword = self.basic_keyword
     print(self.allowed_keyword)
 
-
   @classmethod
   def from_crawler(cls, crawler, *args, **kwargs):
     spider = super(WebsiteSpider, cls).from_crawler(crawler, *args, **kwargs)
@@ -171,8 +167,6 @@ class WebsiteSpider(scrapy.Spider):
 
     return spider
   
-
-    
   def start_requests(self):
     for url in self.start_urls:
       yield scrapy.Request(
