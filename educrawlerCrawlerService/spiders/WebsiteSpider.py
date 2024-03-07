@@ -191,6 +191,7 @@ class WebsiteSpider(scrapy.Spider):
           
   def parse(self, response):
     # Service Trigger (To keep service alway alive while running)
+    '''
     datetime_str = datetime.now()
     if (datetime_str.minute % 15 == 0 and datetime_str.second == 0):
       try:
@@ -198,6 +199,7 @@ class WebsiteSpider(scrapy.Spider):
         #yield scrapy.Request('https://educrawlercrawlerservice.onrender.com/', callback=self.parseTrigger) 
       except:
         print("Error when trigger crawling service")
+    '''
     
     # Parse
     converted_headers = self.convert(response.headers)
