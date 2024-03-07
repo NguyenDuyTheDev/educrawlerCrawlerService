@@ -1,5 +1,3 @@
-import requests
-
 def CssSelectorGenerator(basicCss):  
   result = ""
   recentCss = basicCss
@@ -300,6 +298,3 @@ def removeEmptySpaceParagraph(text: str) -> str:
       goodWords.append(reformattedWord)
       
   return " ".join(goodWords)
-
-def triggerCrawlingService():
-  requests.get('https://educrawlercrawlerservice.onrender.com/')
