@@ -10,8 +10,6 @@ from twisted.internet.error import TimeoutError, TCPTimedOutError
 from educrawlerCrawlerService.utils import CssSelectorGenerator, CSSAttributeType, CSSContentType, countExistedTimes, removeEmptySpaceParagraph, removeHTMLTag, removeEmptyLine, countLetterInParagraph, countExistedTimesTokenize
 import math
 
-from datetime import datetime
-
 from scrapy import signals
 
 class WebsiteSpider(scrapy.Spider):
