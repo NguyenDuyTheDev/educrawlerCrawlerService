@@ -170,9 +170,7 @@ class WebsiteSpider(scrapy.Spider):
     crawler.signals.connect(spider.spider_closed, signal=signals.spider_closed)
 
     return spider
-  
 
-    
   def start_requests(self):
     for url in self.start_urls:
       yield scrapy.Request(

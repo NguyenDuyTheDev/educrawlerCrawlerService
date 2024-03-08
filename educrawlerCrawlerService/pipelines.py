@@ -7,6 +7,7 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 from databaseAPI import Singleton
+from spiderControler import SpiderControler
 
 class EducrawlercrawlerservicePipeline:
   def process_item(self, item, spider):
@@ -63,13 +64,17 @@ class DemoPipeline:
 class WebpagePineline:
   def __init__(self) -> None:
     self.databaseAPI = Singleton()
+    self.spiderControler = SpiderControler()
   
   def open_spider(self, spider):
-    pass
+    if spider.spider_type == "webpage":
+      self.spiderControler.openSpider(spider.spider_db_id)
   
   def close_spider(self, spider):
     if spider.spider_type == "webpage":
-      self.databaseAPI.updateSpiderWhenClosingViaID(spider.spider_db_id)
+      self.spiderControler.closeSpider(spider.spider_db_id)
+      self.spiderControler.writeSpiderHistory(spider.spider_db_id)
+      #self.databaseAPI.updateSpiderWhenClosingViaID(spider.spider_db_id)
   
   def process_item(self, item, spider):
     if item["crawlerType"] != "webpage":
@@ -105,13 +110,23 @@ class WebpagePineline:
 class WebsitePineline:
   def __init__(self) -> None:
     self.databaseAPI = Singleton()
+    self.spiderControler = SpiderControler()
   
   def open_spider(self, spider):
-    pass
+    if spider.spider_type == "website":
+      self.spiderControler.openSpider(spider.spider_db_id)
   
   def close_spider(self, spider):
     if spider.spider_type == "website":
-      self.databaseAPI.updateSpiderWhenClosingViaID(spider.spider_db_id)
+      self.spiderControler.closeSpider(spider.spider_db_id)
+      #self.spiderControler.writeSpiderHistory(spider.spider_db_id)
+      self.spiderControler.writeWebsiteSpiderHistory(
+        spider_id=spider.spider_db_id,
+        crawlSuccess=spider.crawl_success,
+        crawlFail=spider.crawl_fail
+      )
+
+      #self.databaseAPI.updateSpiderWhenClosingViaID(spider.spider_db_id)
       total_article = self.databaseAPI.getSpiderTotalAriticle(spider_id=spider.spider_db_id)
       if total_article[0] == True:
         self.databaseAPI.setSpiderTotalAriticle(spider_id=spider.spider_db_id, total_article=total_article[1])
