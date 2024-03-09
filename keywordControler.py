@@ -52,7 +52,7 @@ class KeywordControler(Singleton):
   def setTotalArticleContainKeyword(self, keyword_id, total):
     sql_command = '''
         UPDATE public."Keyword"
-        SET "TotalArticles" = %s,
+        SET "TotalArticles" = %s
         WHERE "ID" = %s;            
       ''' % (total, keyword_id)   
       
