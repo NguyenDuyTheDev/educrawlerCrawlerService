@@ -206,6 +206,9 @@ class WebsiteSpider(scrapy.Spider):
 
       # Check academic content      
       for keyword in self.allowed_keyword:
+        if len(keyword) <= 1:
+          continue
+        
         count = countExistedTimesTokenize(websiteTitle, keyword)
         if count > 0:
           found_keywords.append(keyword)
