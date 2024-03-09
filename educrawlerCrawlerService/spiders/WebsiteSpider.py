@@ -146,19 +146,17 @@ class WebsiteSpider(scrapy.Spider):
     self.crawl_fail = 0
     self.custom_depth_limit = graphDeep
     self.custom_concurrent = maxThread
+    self.is_academic = isAcademic
     #self.custom_crawl_rules = custom_crawl_rules
 
-    if isAcademic == False:
-      try:
-        keywordsAsList = keywords.split(',')
-        print(keywordsAsList, type(keywordsAsList))
-        if len(keywordsAsList) > 0:
-          self.allowed_keyword = keywordsAsList
-      except:
-        self.allowed_keyword = self.basic_keyword
-      print(self.allowed_keyword)
-    else:
-      self.allowed_keyword = []
+    try:
+      keywordsAsList = keywords.split(',')
+      print(keywordsAsList, type(keywordsAsList))
+      if len(keywordsAsList) > 0:
+        self.allowed_keyword = keywordsAsList
+    except:
+      self.allowed_keyword = self.basic_keyword
+    print(self.allowed_keyword)
 
   @classmethod
   def from_crawler(cls, crawler, *args, **kwargs):
@@ -219,7 +217,7 @@ class WebsiteSpider(scrapy.Spider):
           academic_keywords += count
           
       # Check before save
-      if (len(self.allowed_keyword) == 0 or (len(self.allowed_keyword) > 0 and academic_keywords > 0)) and (len(raw_content) > 0) and (total_words > 99):
+      if (total_words > 99) and ((self.is_academic == True) or (len(self.allowed_keyword) == 0) or (len(self.allowed_keyword) > 0 and len(found_keywords) > 0)):
         items = {
           "crawlerType": "website",
           "domain": self.allowed_domains[0],
