@@ -123,6 +123,8 @@ def removeHTMLTag(text : str) -> str:
   text = text.replace("</col>","")  
   text = text.replace("<colgroup>","")
   text = text.replace("</colgroup>","")   
+  text = text.replace("<svg>","")
+  text = text.replace("</svg>","")   
       
   # Styles
   text = text.replace("<style>","")
@@ -151,6 +153,8 @@ def removeHTMLTag(text : str) -> str:
   text = text.replace("</summary>","")  
   text = text.replace("<data>","")
   text = text.replace("</data>","")  
+      
+  text = text.replace("</path>","")  
       
   # Programming
   text = text.replace("<script>","")
@@ -208,6 +212,12 @@ def removeHTMLTag(text : str) -> str:
       
   while text.find("<font") != -1:       
     idx1 = text.find("<font")
+    idx2 = text.find(">", idx1)
+    res = text[idx1: idx2 + 1]
+    text = text.replace(res, "")
+
+  while text.find("<svg") != -1:       
+    idx1 = text.find("<svg")
     idx2 = text.find(">", idx1)
     res = text[idx1: idx2 + 1]
     text = text.replace(res, "")
