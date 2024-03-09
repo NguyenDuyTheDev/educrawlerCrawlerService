@@ -6,8 +6,11 @@
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
+
 from databaseAPI import Singleton
 from spiderControler import SpiderControler
+from articleControler import ArticleControler
+from keywordControler import KeywordControler
 
 class EducrawlercrawlerservicePipeline:
   def process_item(self, item, spider):
@@ -111,6 +114,8 @@ class WebsitePineline:
   def __init__(self) -> None:
     self.databaseAPI = Singleton()
     self.spiderControler = SpiderControler()
+    self.keywordControler = KeywordControler()
+    self.articleControler = ArticleControler()
   
   def open_spider(self, spider):
     if spider.spider_type == "website":
@@ -157,6 +162,12 @@ class WebsitePineline:
       )
       if res[0] == True:
         spider.crawl_success += 1
+        
+        for keyword in item["keywords"]:
+          keyword_id = self.keywordControler.getKeywordIDByName(keyword)
+          article_id = self.articleControler.getArticleIDByUrl(item["url"])
+          if keyword_id != -1 and article_id != -1:
+            article_id = self.keywordControler.insertKeywordToArticle(keyword_id, article_id)
       else:
         spider.crawl_fail += 1
 
@@ -170,6 +181,12 @@ class WebsitePineline:
       )
       if res[0] == True:
         spider.crawl_success += 1
+        
+        for keyword in item["keywords"]:
+          keyword_id = self.keywordControler.getKeywordIDByName(keyword)
+          article_id = self.articleControler.getArticleIDByUrl(item["url"])
+          if keyword_id != -1 and article_id != -1:
+            article_id = self.keywordControler.insertKeywordToArticle(keyword_id, article_id)
       else:
         spider.crawl_fail += 1
       
