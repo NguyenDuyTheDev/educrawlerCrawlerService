@@ -135,7 +135,13 @@ class WebsitePineline:
       total_article = self.databaseAPI.getSpiderTotalAriticle(spider_id=spider.spider_db_id)
       if total_article[0] == True:
         self.databaseAPI.setSpiderTotalAriticle(spider_id=spider.spider_db_id, total_article=total_article[1])
-      self.databaseAPI.increaseWebsiteSpiderCrawl(spider_id=spider.spider_db_id, crawl_success=spider.crawl_success, crawl_fail=spider.crawl_fail )
+      self.databaseAPI.increaseWebsiteSpiderCrawl(spider_id=spider.spider_db_id, crawl_success=spider.crawl_success, crawl_fail=spider.crawl_fail)
+      
+      for keyword in spider.allowed_keyword:
+        id = self.keywordControler.getKeywordIDByName(keyword)
+        if id != - 1:
+          count = self.keywordControler.getTotalArticleContainKeyword(id)
+          self.keywordControler.setTotalArticleContainKeyword(id, count)
   
   def process_item(self, item, spider):
     if item["crawlerType"] != "website":
