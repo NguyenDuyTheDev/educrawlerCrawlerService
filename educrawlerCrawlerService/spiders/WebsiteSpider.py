@@ -121,7 +121,8 @@ class WebsiteSpider(scrapy.Spider):
                delay: float = 2.0, 
                graphDeep: int = 2, 
                maxThread: int = 1,
-               keywords: str = "[]",
+               keywords: str = "",
+               isAcademic: bool = False,
                name: Optional[str] = None, 
                **kwargs: Any):   
     super(WebsiteSpider, self).__init__(name, **kwargs)
@@ -147,15 +148,17 @@ class WebsiteSpider(scrapy.Spider):
     self.custom_concurrent = maxThread
     #self.custom_crawl_rules = custom_crawl_rules
 
-    try:
-      keywordsAsList = keywords.split(',')
-      print(keywordsAsList, type(keywordsAsList))
-      if len(keywordsAsList) > 0:
-        self.allowed_keyword = keywordsAsList
-    except:
-      self.allowed_keyword = self.basic_keyword
-    print(self.allowed_keyword)
-
+    if isAcademic == False:
+      try:
+        keywordsAsList = keywords.split(',')
+        print(keywordsAsList, type(keywordsAsList))
+        if len(keywordsAsList) > 0:
+          self.allowed_keyword = keywordsAsList
+      except:
+        self.allowed_keyword = self.basic_keyword
+      print(self.allowed_keyword)
+    else:
+      self.allowed_keyword = []
 
   @classmethod
   def from_crawler(cls, crawler, *args, **kwargs):

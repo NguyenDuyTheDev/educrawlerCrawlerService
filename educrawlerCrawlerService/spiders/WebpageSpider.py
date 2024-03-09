@@ -117,8 +117,9 @@ class WebpageSpider(scrapy.Spider):
     spider_id: int, 
     link: str, 
     keywords: str = "",
-    name: Optional[str] = None, 
     crawlRule: str = "",
+    isAcademic: bool = False,
+    name: Optional[str] = None, 
     **kwargs: Any
     ):   
     super(WebpageSpider, self).__init__(name, **kwargs)
@@ -137,18 +138,24 @@ class WebpageSpider(scrapy.Spider):
     self.spider_type = "webpage"
     #self.custom_crawl_rules = custom_crawl_rules
     
-    try:
-      keywordsAsList = keywords.split(',')
-      print(keywordsAsList, type(keywordsAsList))
-      if len(keywordsAsList) > 0:
-        self.allowed_keyword = keywordsAsList
-    except:
-      self.allowed_keyword = self.basic_keyword
-    print(self.allowed_keyword)
-    
-    crawlRuleAsList = crawlRule.split(",")
-    self.crawl_rule = crawlRuleAsList
-    print(self.crawl_rule)
+    # if the website is a multitype content
+    if isAcademic == False:
+      try:
+        keywordsAsList = keywords.split(',')
+        print(keywordsAsList, type(keywordsAsList))
+        if len(keywordsAsList) > 0:
+          self.allowed_keyword = keywordsAsList
+      except:
+        self.allowed_keyword = self.basic_keyword
+      print(self.allowed_keyword)
+      
+      crawlRuleAsList = crawlRule.split(",")
+      self.crawl_rule = crawlRuleAsList
+      print(self.crawl_rule)
+      
+    # if the website is a academic content 
+    else:
+      self.allowed_keyword = []
 
   @classmethod
   def from_crawler(cls, crawler, *args, **kwargs):
