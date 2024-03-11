@@ -267,6 +267,34 @@ class WebsiteSpider(scrapy.Spider):
     #Find next link 
     if ("text/html" in converted_headers["Content-Type"]):
       rawHrefs  = response.css('a::attr(href)').getall()
+      
+      # User Define Content
+      found_search_rules = 0          
+      user_define_url = []
+      try:
+        for rule in self.search_rule:
+          if rule["Subfolder"] == '#': continue
+          if rule["Subfolder"] not in response.url: continue
+          found_search_rules += 1
+          
+          if response.css(rule["Rule"]):
+            user_define_url = user_define_url + response.css(rule["Rule"]).getall()
+      except:
+        user_define_url = user_define_url
+      rawHrefs = rawHrefs + user_define_url    
+      
+      # User Define Content Page
+      if found_search_rules == 0:   
+        user_define_url = []
+        try:
+          for rule in self.search_rule:
+            if rule["Subfolder"] != '#': continue            
+            if response.css(rule["Rule"]):
+              user_define_url = user_define_url + response.css(rule["Rule"]).getall()
+        except:
+          user_define_url = user_define_url
+        rawHrefs = rawHrefs + user_define_url 
+      
       realHrefs = []
       for href in rawHrefs:
         # Remove empty href
