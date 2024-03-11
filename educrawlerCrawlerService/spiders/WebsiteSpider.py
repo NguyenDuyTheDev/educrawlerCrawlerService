@@ -147,6 +147,8 @@ class WebsiteSpider(scrapy.Spider):
     self.custom_depth_limit = graphDeep
     self.custom_concurrent = maxThread
     self.is_academic = isAcademic
+    self.crawl_rule = []
+    self.search_rule = []
     #self.custom_crawl_rules = custom_crawl_rules
 
     try:
@@ -195,6 +197,33 @@ class WebsiteSpider(scrapy.Spider):
       websiteTitle = response.css('title::text').get()
       content   = response.css('p').getall()
           
+      # User Define Content
+      found_crawl_rules = 0          
+      user_define_content = []
+      try:
+        for rule in self.crawl_rule:
+          if rule["Subfolder"] == '#': continue
+          if rule["Subfolder"] not in response.url: continue
+          found_crawl_rules += 1
+          
+          if response.css(rule["Rule"]):
+            user_define_content = user_define_content + response.css(rule["Rule"]).getall()
+      except:
+        user_define_content = user_define_content
+      content = content + user_define_content    
+      
+      # User Define Content Page
+      if found_crawl_rules == 0:   
+        user_define_content = []
+        try:
+          for rule in self.crawl_rule:
+            if rule["Subfolder"] != '#': continue            
+            if response.css(rule["Rule"]):
+              user_define_content = user_define_content + response.css(rule["Rule"]).getall()
+        except:
+          user_define_content = user_define_content
+        content = content + user_define_content    
+
       # Content Checking and Reformatted
       found_keywords = []
       raw_content = " ".join(content)

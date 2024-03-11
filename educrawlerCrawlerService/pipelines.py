@@ -12,6 +12,8 @@ from spiderControler import SpiderControler
 from articleControler import ArticleControler
 from keywordControler import KeywordControler
 
+from DBController.SpiderController import SpiderController
+
 class EducrawlercrawlerservicePipeline:
   def process_item(self, item, spider):
     return item
@@ -116,10 +118,19 @@ class WebsitePineline:
     self.spiderControler = SpiderControler()
     self.keywordControler = KeywordControler()
     self.articleControler = ArticleControler()
+    self.spiderController2 = SpiderController()
   
   def open_spider(self, spider):
     if spider.spider_type == "website":
       self.spiderControler.openSpider(spider.spider_db_id)
+      
+      res = self.spiderController2.getWebsiteSpiderCrawlRulesAsCssSelector(spider_id=spider.spider_db_id)
+      if res[0]:
+        spider.crawl_rule = res[1]
+
+      res = self.spiderController2.getWebsiteSpiderSearchRulesAssCssSelector(spider_id=spider.spider_db_id)
+      if res[0]:
+        spider.search_rule = res[1]
   
   def close_spider(self, spider):
     if spider.spider_type == "website":
