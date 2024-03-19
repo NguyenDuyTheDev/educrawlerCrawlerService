@@ -47,10 +47,12 @@ class SpiderControler(Singleton):
       "Status" = 'Available',
       "CrawlStatus" = 'Good', 
       "LastEndDate" = TIMESTAMP '%s',
-      "RunTime" = '%s',
-      "StatusCode" = %s
-      WHERE "ID" = %s;            
-      ''' % (reformatted_current, totalRunTimeAsInt, status_code, spider_id)   
+      "RunTime" = '%s'
+      WHERE "ID" = %s;           
+      UPDATE public."WebpageSpider"
+      SET "StatusCode" = %s
+      WHERE "ID" = %s; 
+      ''' % (reformatted_current, totalRunTimeAsInt, spider_id, status_code, spider_id)   
     except:
       return
     
