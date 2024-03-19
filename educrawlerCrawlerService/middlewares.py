@@ -151,7 +151,7 @@ class EducrawlercrawlerserviceSpiderMiddlewareForWebpageSpider:
 
         if spider.spider_type != "webpage":
           return
-        self.status_code = response.status
+        spider.status_code = response.status
         
         # Should return None or raise an exception.
         '''
