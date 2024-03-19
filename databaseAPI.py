@@ -899,3 +899,28 @@ class Singleton(metaclass=SingletonMeta):
       self.cur.execute("ROLLBACK;")
       return (False, "Error when fetching data")
     return (True, "Update success")
+  
+  def increaseWebsiteSpiderCrawlStatusCode(
+    self, 
+    spider_id, 
+    status_code_200 = 0, 
+    status_code_300 = 0,
+    status_code_400 = 0,
+    status_code_500 = 0
+    ):  
+    sql_command = '''
+    UPDATE public."WebsiteSpider"
+    SET "StatusCode200" = "StatusCode200" + %s,
+    "StatusCode300" = "StatusCode300" + %s,
+    "StatusCode400" = "StatusCode400" + %s,
+    "StatusCode500" = "StatusCode500" + %s    
+    WHERE "ID" = %s;            
+    ''' % (status_code_200, status_code_300, status_code_400, status_code_500, spider_id)   
+  
+    try:
+      self.cur.execute(sql_command)
+      self.connection.commit()
+    except:
+      self.cur.execute("ROLLBACK;")
+      return (False, "Error when fetching data")
+    return (True, "Update success")

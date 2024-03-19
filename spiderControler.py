@@ -23,7 +23,7 @@ class SpiderControler(Singleton):
     except:
       self.cur.execute("ROLLBACK;")
         
-  def closeSpider(self, spider_id):
+  def closeSpider(self, spider_id, status_code = 0):
     sql_command = '''
     SELECT *
     FROM public."Spider"
@@ -47,9 +47,10 @@ class SpiderControler(Singleton):
       "Status" = 'Available',
       "CrawlStatus" = 'Good', 
       "LastEndDate" = TIMESTAMP '%s',
-      "RunTime" = '%s'
+      "RunTime" = '%s',
+      "StatusCode" = %s
       WHERE "ID" = %s;            
-      ''' % (reformatted_current, totalRunTimeAsInt, spider_id)   
+      ''' % (reformatted_current, totalRunTimeAsInt, status_code, spider_id)   
     except:
       return
     
@@ -59,7 +60,7 @@ class SpiderControler(Singleton):
     except:
       self.cur.execute("ROLLBACK;")
 
-  def writeSpiderHistory(self, spider_id):
+  def writeSpiderHistory(self, spider_id, status_code = 0):
     sql_command = '''
     SELECT *
     FROM public."Spider"
@@ -77,9 +78,9 @@ class SpiderControler(Singleton):
       RunTime = result[5] - result[4]
         
       sql_command = '''
-      INSERT INTO public."CrawlHistory" ("Url", "RunDate", "EndDate", "RunTime", "SpiderID")
-      VALUES ('%s', TIMESTAMP '%s', TIMESTAMP '%s', %s, %s);
-      ''' % (result[1], LastRunDate, LastEndDate, RunTime.seconds, spider_id)
+      INSERT INTO public."CrawlHistory" ("Url", "RunDate", "EndDate", "RunTime", "SpiderID", "StatusCode")
+      VALUES ('%s', TIMESTAMP '%s', TIMESTAMP '%s', %s, %s, %s);
+      ''' % (result[1], LastRunDate, LastEndDate, RunTime.seconds, spider_id, status_code)
     except:
       return
     
@@ -90,7 +91,12 @@ class SpiderControler(Singleton):
       print("Write Spider History Error")
       self.cur.execute("ROLLBACK;")
       
-  def writeWebsiteSpiderHistory(self, spider_id, crawlSuccess, crawlFail):
+  def writeWebsiteSpiderHistory(self, spider_id, crawlSuccess, crawlFail, 
+                                statusCode200 = 0, 
+                                statusCode300 = 0,
+                                statusCode400 = 0, 
+                                statusCode500 = 0,
+                                ):
     sql_command = '''
     SELECT *
     FROM public."Spider"
@@ -136,9 +142,9 @@ class SpiderControler(Singleton):
         
       totalPage = crawlSuccess + crawlFail
       sql_command = '''
-      INSERT INTO public."WebsiteSpiderHistory" ("ID", "TotalPage", "CrawlSuccess", "CrawlFail")
-      VALUES (%s, %s, %s, %s);
-      ''' % (result[0], totalPage, crawlSuccess, crawlFail)
+      INSERT INTO public."WebsiteSpiderHistory" ("ID", "TotalPage", "CrawlSuccess", "CrawlFail", "StatusCode200", "StatusCode300", "StatusCode400", "StatusCode500")
+      VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
+      ''' % (result[0], totalPage, crawlSuccess, crawlFail, statusCode200, statusCode300, statusCode400, statusCode500)
     except:
       return
     

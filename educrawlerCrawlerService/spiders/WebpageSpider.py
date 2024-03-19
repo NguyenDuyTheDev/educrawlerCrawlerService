@@ -136,8 +136,9 @@ class WebpageSpider(scrapy.Spider):
     self.download_delay                                     = 2
     self.spider_db_id = spider_id
     self.spider_type = "webpage"
-    self.is_academic = isAcademic
-    #self.custom_crawl_rules = custom_crawl_rules
+    self.is_academic = isAcademic    
+    self.crawl_rule = crawlRule.split(',')
+    self.status_code = 0
     
     try:
       keywordsAsList = keywords.split(',')

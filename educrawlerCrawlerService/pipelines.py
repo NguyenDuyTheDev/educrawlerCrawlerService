@@ -77,8 +77,8 @@ class WebpagePineline:
   
   def close_spider(self, spider):
     if spider.spider_type == "webpage":
-      self.spiderControler.closeSpider(spider.spider_db_id)
-      self.spiderControler.writeSpiderHistory(spider.spider_db_id)
+      self.spiderControler.closeSpider(spider.spider_db_id, status_code=spider.status_code)
+      self.spiderControler.writeSpiderHistory(spider.spider_db_id, status_code=spider.status_code)
       #self.databaseAPI.updateSpiderWhenClosingViaID(spider.spider_db_id)
   
   def process_item(self, item, spider):
@@ -139,14 +139,29 @@ class WebsitePineline:
       self.spiderControler.writeWebsiteSpiderHistory(
         spider_id=spider.spider_db_id,
         crawlSuccess=spider.crawl_success,
-        crawlFail=spider.crawl_fail
+        crawlFail=spider.crawl_fail,
+        statusCode200=spider.status_code_200,
+        statusCode300=spider.status_code_300,
+        statusCode400=spider.status_code_400,
+        statusCode500=spider.status_code_500,        
       )
 
       #self.databaseAPI.updateSpiderWhenClosingViaID(spider.spider_db_id)
       total_article = self.databaseAPI.getSpiderTotalAriticle(spider_id=spider.spider_db_id)
       if total_article[0] == True:
         self.databaseAPI.setSpiderTotalAriticle(spider_id=spider.spider_db_id, total_article=total_article[1])
-      self.databaseAPI.increaseWebsiteSpiderCrawl(spider_id=spider.spider_db_id, crawl_success=spider.crawl_success, crawl_fail=spider.crawl_fail)
+      self.databaseAPI.increaseWebsiteSpiderCrawl(
+        spider_id=spider.spider_db_id, 
+        crawl_success=spider.crawl_success, 
+        crawl_fail=spider.crawl_fail
+      )
+      self.databaseAPI.increaseWebsiteSpiderCrawlStatusCode(
+        spider_id=spider.spider_db_id, 
+        status_code_200=spider.status_code_200,
+        status_code_300=spider.status_code_300,
+        status_code_400=spider.status_code_400,
+        status_code_500=spider.status_code_500
+      )
       
       for keyword in spider.allowed_keyword:
         id = self.keywordControler.getKeywordIDByName(keyword)

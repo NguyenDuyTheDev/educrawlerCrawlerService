@@ -138,8 +138,6 @@ class WebsiteSpider(scrapy.Spider):
       self.allowed_domains.append(domain)
           
     self.download_delay                                     = float(delay)
-    #self.custom_settings["DEPTH_LIMIT"]                     = graphDeep
-    #self.custom_settings["CONCURRENT_REQUESTS_PER_DOMAIN"]  = maxThread
     self.spider_db_id = spider_id
     self.spider_type = "website"
     self.crawl_success = 0
@@ -149,8 +147,11 @@ class WebsiteSpider(scrapy.Spider):
     self.is_academic = isAcademic
     self.crawl_rule = []
     self.search_rule = []
-    #self.custom_crawl_rules = custom_crawl_rules
-
+    self.status_code_200 = 0
+    self.status_code_300 = 0
+    self.status_code_400 = 0
+    self.status_code_500 = 0
+    
     try:
       keywordsAsList = keywords.split(',')
       print(keywordsAsList, type(keywordsAsList))

@@ -46,9 +46,11 @@ RANDOMIZE_DOWNLOAD_DELAY = True
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-#SPIDER_MIDDLEWARES = {
-#    "educrawlerCrawlerService.middlewares.EducrawlercrawlerserviceSpiderMiddleware": 543,
-#}
+SPIDER_MIDDLEWARES = {
+    #"educrawlerCrawlerService.middlewares.EducrawlercrawlerserviceSpiderMiddleware": 543,
+    "educrawlerCrawlerService.middlewares.EducrawlercrawlerserviceSpiderMiddlewareForWebsiteSpider": 500,
+    "educrawlerCrawlerService.middlewares.EducrawlercrawlerserviceSpiderMiddlewareForWebpageSpider": 501
+}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
