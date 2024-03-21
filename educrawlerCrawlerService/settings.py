@@ -14,7 +14,9 @@ NEWSPIDER_MODULE = "educrawlerCrawlerService.spiders"
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
+USER_AGENT = "educrawlerCrawlerService (+http://educrawlercrawlerservice.onrender.com)"
 #USER_AGENT = "educrawlerCrawlerService (+http://www.yourdomain.com)"
+
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -39,10 +41,10 @@ RANDOMIZE_DOWNLOAD_DELAY = True
 #TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
-#DEFAULT_REQUEST_HEADERS = {
-#    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-#    "Accept-Language": "en",
-#}
+DEFAULT_REQUEST_HEADERS = {
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+    #"Accept-Language": "en",
+}
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
