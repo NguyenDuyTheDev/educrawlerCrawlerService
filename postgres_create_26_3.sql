@@ -3,28 +3,27 @@
 BEGIN;
 
 
-CREATE TABLE IF NOT EXISTS public."CrawlRules"
+CREATE TABLE IF NOT EXISTS public."ArticleFile"
 (
-    "ID" integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-    "Tag" text COLLATE pg_catalog."default",
-    "HTMLClassName" text COLLATE pg_catalog."default",
-    "HTMLIDName" text COLLATE pg_catalog."default",
-    "ChildCrawlRuleID" integer,
-    CONSTRAINT "CrawlRules_pkey" PRIMARY KEY ("ID")
+    "ArticleID" integer NOT NULL,
+    "FileID" integer NOT NULL,
+    CONSTRAINT "ArticleFile_pkey" PRIMARY KEY ("FileID", "ArticleID")
 );
 
-CREATE TABLE IF NOT EXISTS public."WebpageSpiderCrawlRules"
+CREATE TABLE IF NOT EXISTS public."Article"
 (
-    "SpiderID" integer NOT NULL,
-    "CrawlRulesID" integer NOT NULL,
-    CONSTRAINT "WebpageSpiderCrawlRules_pkey" PRIMARY KEY ("SpiderID", "CrawlRulesID")
-);
-
-CREATE TABLE IF NOT EXISTS public."WebpageSpider"
-(
-    "ID" integer NOT NULL,
-    "StatusCode" integer DEFAULT 0,
-    CONSTRAINT "WebpageSpider_pkey" PRIMARY KEY ("ID")
+    "Id" integer NOT NULL GENERATED ALWAYS AS IDENTITY ( CYCLE INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    "Domain" text COLLATE pg_catalog."default",
+    "Url" text COLLATE pg_catalog."default",
+    "FileName" text COLLATE pg_catalog."default",
+    "Content" text COLLATE pg_catalog."default",
+    "LastUpdate" timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    "CrawlStatus" text COLLATE pg_catalog."default",
+    "Note" text COLLATE pg_catalog."default",
+    "SpiderId" integer,
+    "Title" text COLLATE pg_catalog."default",
+    "FirstCrawlDate" timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "Article_pkey" PRIMARY KEY ("Id")
 );
 
 CREATE TABLE IF NOT EXISTS public."Spider"
@@ -87,44 +86,12 @@ CREATE TABLE IF NOT EXISTS public."ArticleKeyword"
     CONSTRAINT "ArticleKeyword_pkey" PRIMARY KEY ("KeywordID", "ArticleID")
 );
 
-CREATE TABLE IF NOT EXISTS public."Article"
+CREATE TABLE IF NOT EXISTS public."PostprocessingArticleKeyword"
 (
-    "Id" integer NOT NULL GENERATED ALWAYS AS IDENTITY ( CYCLE INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
-    "Domain" text COLLATE pg_catalog."default",
-    "Url" text COLLATE pg_catalog."default",
-    "FileName" text COLLATE pg_catalog."default",
-    "Content" text COLLATE pg_catalog."default",
-    "LastUpdate" timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    "CrawlStatus" text COLLATE pg_catalog."default",
-    "Note" text COLLATE pg_catalog."default",
-    "SpiderId" integer,
-    "Title" text COLLATE pg_catalog."default",
-    "FirstCrawlDate" timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "Article_pkey" PRIMARY KEY ("Id")
-);
-
-CREATE TABLE IF NOT EXISTS public."ArticleFile"
-(
-    "ArticleID" integer NOT NULL,
-    "FileID" integer NOT NULL,
-    CONSTRAINT "ArticleFile_pkey" PRIMARY KEY ("FileID", "ArticleID")
-);
-
-CREATE TABLE IF NOT EXISTS public."File"
-(
-    "ID" integer NOT NULL,
-    "Name" text COLLATE pg_catalog."default",
-    "Location" text COLLATE pg_catalog."default",
-    "Type" text COLLATE pg_catalog."default",
-    "Source" text COLLATE pg_catalog."default",
-    CONSTRAINT "File_pkey" PRIMARY KEY ("ID")
-);
-
-CREATE TABLE IF NOT EXISTS public."PostprocessingArticleFile"
-(
+    "KeywordID" integer NOT NULL,
     "PostprocessingArticleID" integer NOT NULL,
-    "FileID" integer NOT NULL,
-    CONSTRAINT "PostprocessingArticleFile_pkey" PRIMARY KEY ("PostprocessingArticleID", "FileID")
+    "TotalWords" integer DEFAULT 0,
+    CONSTRAINT "PostprocessingArticleKeyword_pkey" PRIMARY KEY ("KeywordID", "PostprocessingArticleID")
 );
 
 CREATE TABLE IF NOT EXISTS public."PostprocessingArticle"
@@ -138,12 +105,21 @@ CREATE TABLE IF NOT EXISTS public."PostprocessingArticle"
     CONSTRAINT "PostprocessingArticle_pkey" PRIMARY KEY ("ID")
 );
 
-CREATE TABLE IF NOT EXISTS public."PostprocessingArticleKeyword"
+CREATE TABLE IF NOT EXISTS public."PostprocessingArticleFile"
 (
-    "KeywordID" integer NOT NULL,
     "PostprocessingArticleID" integer NOT NULL,
-    "TotalWords" integer DEFAULT 0,
-    CONSTRAINT "PostprocessingArticleKeyword_pkey" PRIMARY KEY ("KeywordID", "PostprocessingArticleID")
+    "FileID" integer NOT NULL,
+    CONSTRAINT "PostprocessingArticleFile_pkey" PRIMARY KEY ("PostprocessingArticleID", "FileID")
+);
+
+CREATE TABLE IF NOT EXISTS public."File"
+(
+    "ID" integer NOT NULL,
+    "Name" text COLLATE pg_catalog."default",
+    "Location" text COLLATE pg_catalog."default",
+    "Type" text COLLATE pg_catalog."default",
+    "Source" text COLLATE pg_catalog."default",
+    CONSTRAINT "File_pkey" PRIMARY KEY ("ID")
 );
 
 CREATE TABLE IF NOT EXISTS public."SpiderSupportedFileType"
@@ -158,6 +134,38 @@ CREATE TABLE IF NOT EXISTS public."SupportedFileType"
     "ID" integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
     "Type" character varying(10) COLLATE pg_catalog."default",
     CONSTRAINT "SupportedFileType_pkey" PRIMARY KEY ("ID")
+);
+
+CREATE TABLE IF NOT EXISTS public."WebpageSpider"
+(
+    "ID" integer NOT NULL,
+    "StatusCode" integer DEFAULT 0,
+    CONSTRAINT "WebpageSpider_pkey" PRIMARY KEY ("ID")
+);
+
+CREATE TABLE IF NOT EXISTS public."WebpageSpiderCrawlRules"
+(
+    "SpiderID" integer NOT NULL,
+    "CrawlRulesID" integer NOT NULL,
+    CONSTRAINT "WebpageSpiderCrawlRules_pkey" PRIMARY KEY ("SpiderID", "CrawlRulesID")
+);
+
+CREATE TABLE IF NOT EXISTS public."CrawlRules"
+(
+    "ID" integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    "Tag" text COLLATE pg_catalog."default",
+    "HTMLClassName" text COLLATE pg_catalog."default",
+    "HTMLIDName" text COLLATE pg_catalog."default",
+    "ChildCrawlRuleID" integer,
+    CONSTRAINT "CrawlRules_pkey" PRIMARY KEY ("ID")
+);
+
+CREATE TABLE IF NOT EXISTS public."SubfolderSearchRules"
+(
+    "SubfolderID" integer NOT NULL,
+    "SearchRuleID" integer NOT NULL,
+    "SpiderID" integer NOT NULL,
+    CONSTRAINT "SubfolderSearchRules_pkey" PRIMARY KEY ("SubfolderID", "SearchRuleID")
 );
 
 CREATE TABLE IF NOT EXISTS public."WebsiteSpider"
@@ -189,14 +197,6 @@ CREATE TABLE IF NOT EXISTS public."SubfolderCrawlRules"
     CONSTRAINT "SubfolderCrawlRules_pkey" PRIMARY KEY ("SubfolderID", "CrawlRuleID")
 );
 
-CREATE TABLE IF NOT EXISTS public."SubfolderSearchRules"
-(
-    "SubfolderID" integer NOT NULL,
-    "SearchRuleID" integer NOT NULL,
-    "SpiderID" integer NOT NULL,
-    CONSTRAINT "SubfolderSearchRules_pkey" PRIMARY KEY ("SubfolderID", "SearchRuleID")
-);
-
 CREATE TABLE IF NOT EXISTS public."CrawlHistory"
 (
     "ID" integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
@@ -224,35 +224,25 @@ CREATE TABLE IF NOT EXISTS public."WebsiteSpiderHistory"
     CONSTRAINT "WebsiteSpiderHistory_pkey" PRIMARY KEY ("ID")
 );
 
-ALTER TABLE IF EXISTS public."CrawlRules"
-    ADD CONSTRAINT "CrawlRules_ChildCrawlRuleID_fkey" FOREIGN KEY ("ChildCrawlRuleID")
-    REFERENCES public."CrawlRules" ("ID") MATCH SIMPLE
-    ON UPDATE CASCADE
-    ON DELETE CASCADE
-    NOT VALID;
-
-
-ALTER TABLE IF EXISTS public."WebpageSpiderCrawlRules"
-    ADD CONSTRAINT "CrawlRulesID_fk" FOREIGN KEY ("CrawlRulesID")
-    REFERENCES public."CrawlRules" ("ID") MATCH SIMPLE
+ALTER TABLE IF EXISTS public."ArticleFile"
+    ADD CONSTRAINT "ArticleFile_ArticleID_fkey" FOREIGN KEY ("ArticleID")
+    REFERENCES public."Article" ("Id") MATCH SIMPLE
     ON UPDATE CASCADE
     ON DELETE CASCADE;
 
 
-ALTER TABLE IF EXISTS public."WebpageSpiderCrawlRules"
-    ADD CONSTRAINT "SpiderID_fk" FOREIGN KEY ("SpiderID")
-    REFERENCES public."WebpageSpider" ("ID") MATCH SIMPLE
+ALTER TABLE IF EXISTS public."ArticleFile"
+    ADD CONSTRAINT "ArticleFile_FileID_fkey" FOREIGN KEY ("FileID")
+    REFERENCES public."File" ("ID") MATCH SIMPLE
     ON UPDATE CASCADE
     ON DELETE CASCADE;
 
 
-ALTER TABLE IF EXISTS public."WebpageSpider"
-    ADD CONSTRAINT "IDfk" FOREIGN KEY ("ID")
+ALTER TABLE IF EXISTS public."Article"
+    ADD CONSTRAINT "Article_SpiderId_fkey" FOREIGN KEY ("SpiderId")
     REFERENCES public."Spider" ("ID") MATCH SIMPLE
-    ON UPDATE CASCADE
-    ON DELETE CASCADE;
-CREATE INDEX IF NOT EXISTS "WebpageSpider_pkey"
-    ON public."WebpageSpider"("ID");
+    ON UPDATE SET NULL
+    ON DELETE SET NULL;
 
 
 ALTER TABLE IF EXISTS public."Spider"
@@ -290,23 +280,16 @@ ALTER TABLE IF EXISTS public."ArticleKeyword"
     ON DELETE CASCADE;
 
 
-ALTER TABLE IF EXISTS public."Article"
-    ADD CONSTRAINT "Article_SpiderId_fkey" FOREIGN KEY ("SpiderId")
-    REFERENCES public."Spider" ("ID") MATCH SIMPLE
-    ON UPDATE SET NULL
-    ON DELETE SET NULL;
-
-
-ALTER TABLE IF EXISTS public."ArticleFile"
-    ADD CONSTRAINT "ArticleFile_ArticleID_fkey" FOREIGN KEY ("ArticleID")
-    REFERENCES public."Article" ("Id") MATCH SIMPLE
+ALTER TABLE IF EXISTS public."PostprocessingArticleKeyword"
+    ADD CONSTRAINT "PostprocessingArticleKeyword_KeywordID_fkey" FOREIGN KEY ("KeywordID")
+    REFERENCES public."Keyword" ("ID") MATCH SIMPLE
     ON UPDATE CASCADE
     ON DELETE CASCADE;
 
 
-ALTER TABLE IF EXISTS public."ArticleFile"
-    ADD CONSTRAINT "ArticleFile_FileID_fkey" FOREIGN KEY ("FileID")
-    REFERENCES public."File" ("ID") MATCH SIMPLE
+ALTER TABLE IF EXISTS public."PostprocessingArticleKeyword"
+    ADD CONSTRAINT "PostprocessingArticleKeyword_PostprocessingArticleID_fkey" FOREIGN KEY ("PostprocessingArticleID")
+    REFERENCES public."PostprocessingArticle" ("ID") MATCH SIMPLE
     ON UPDATE CASCADE
     ON DELETE CASCADE;
 
@@ -325,20 +308,6 @@ ALTER TABLE IF EXISTS public."PostprocessingArticleFile"
     ON DELETE CASCADE;
 
 
-ALTER TABLE IF EXISTS public."PostprocessingArticleKeyword"
-    ADD CONSTRAINT "PostprocessingArticleKeyword_KeywordID_fkey" FOREIGN KEY ("KeywordID")
-    REFERENCES public."Keyword" ("ID") MATCH SIMPLE
-    ON UPDATE CASCADE
-    ON DELETE CASCADE;
-
-
-ALTER TABLE IF EXISTS public."PostprocessingArticleKeyword"
-    ADD CONSTRAINT "PostprocessingArticleKeyword_PostprocessingArticleID_fkey" FOREIGN KEY ("PostprocessingArticleID")
-    REFERENCES public."PostprocessingArticle" ("ID") MATCH SIMPLE
-    ON UPDATE CASCADE
-    ON DELETE CASCADE;
-
-
 ALTER TABLE IF EXISTS public."SpiderSupportedFileType"
     ADD CONSTRAINT "FileTypeIDpk" FOREIGN KEY ("FileTypeID")
     REFERENCES public."SupportedFileType" ("ID") MATCH SIMPLE
@@ -349,6 +318,58 @@ ALTER TABLE IF EXISTS public."SpiderSupportedFileType"
 ALTER TABLE IF EXISTS public."SpiderSupportedFileType"
     ADD CONSTRAINT "SpiderIDpk" FOREIGN KEY ("SpiderID")
     REFERENCES public."Spider" ("ID") MATCH SIMPLE
+    ON UPDATE CASCADE
+    ON DELETE CASCADE;
+
+
+ALTER TABLE IF EXISTS public."WebpageSpider"
+    ADD CONSTRAINT "IDfk" FOREIGN KEY ("ID")
+    REFERENCES public."Spider" ("ID") MATCH SIMPLE
+    ON UPDATE CASCADE
+    ON DELETE CASCADE;
+CREATE INDEX IF NOT EXISTS "WebpageSpider_pkey"
+    ON public."WebpageSpider"("ID");
+
+
+ALTER TABLE IF EXISTS public."WebpageSpiderCrawlRules"
+    ADD CONSTRAINT "CrawlRulesID_fk" FOREIGN KEY ("CrawlRulesID")
+    REFERENCES public."CrawlRules" ("ID") MATCH SIMPLE
+    ON UPDATE CASCADE
+    ON DELETE CASCADE;
+
+
+ALTER TABLE IF EXISTS public."WebpageSpiderCrawlRules"
+    ADD CONSTRAINT "SpiderID_fk" FOREIGN KEY ("SpiderID")
+    REFERENCES public."WebpageSpider" ("ID") MATCH SIMPLE
+    ON UPDATE CASCADE
+    ON DELETE CASCADE;
+
+
+ALTER TABLE IF EXISTS public."CrawlRules"
+    ADD CONSTRAINT "CrawlRules_ChildCrawlRuleID_fkey" FOREIGN KEY ("ChildCrawlRuleID")
+    REFERENCES public."CrawlRules" ("ID") MATCH SIMPLE
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+    NOT VALID;
+
+
+ALTER TABLE IF EXISTS public."SubfolderSearchRules"
+    ADD CONSTRAINT "SubfolderSearchRules_SearchRuleID_fkey" FOREIGN KEY ("SearchRuleID")
+    REFERENCES public."CrawlRules" ("ID") MATCH SIMPLE
+    ON UPDATE CASCADE
+    ON DELETE CASCADE;
+
+
+ALTER TABLE IF EXISTS public."SubfolderSearchRules"
+    ADD CONSTRAINT "SubfolderSearchRules_SpiderID_fkey" FOREIGN KEY ("SpiderID")
+    REFERENCES public."WebsiteSpider" ("ID") MATCH SIMPLE
+    ON UPDATE CASCADE
+    ON DELETE CASCADE;
+
+
+ALTER TABLE IF EXISTS public."SubfolderSearchRules"
+    ADD CONSTRAINT "SubfolderSearchRules_SubfolderID_fkey" FOREIGN KEY ("SubfolderID")
+    REFERENCES public."Subfolder" ("ID") MATCH SIMPLE
     ON UPDATE CASCADE
     ON DELETE CASCADE;
 
@@ -390,35 +411,11 @@ ALTER TABLE IF EXISTS public."SubfolderCrawlRules"
     ON DELETE CASCADE;
 
 
-ALTER TABLE IF EXISTS public."SubfolderSearchRules"
-    ADD CONSTRAINT "SubfolderSearchRules_SearchRuleID_fkey" FOREIGN KEY ("SearchRuleID")
-    REFERENCES public."CrawlRules" ("ID") MATCH SIMPLE
-    ON UPDATE CASCADE
-    ON DELETE CASCADE
-    NOT VALID;
-
-
-ALTER TABLE IF EXISTS public."SubfolderSearchRules"
-    ADD CONSTRAINT "SubfolderSearchRules_SpiderID_fkey" FOREIGN KEY ("SpiderID")
-    REFERENCES public."WebsiteSpider" ("ID") MATCH SIMPLE
-    ON UPDATE CASCADE
-    ON DELETE CASCADE
-    NOT VALID;
-
-
-ALTER TABLE IF EXISTS public."SubfolderSearchRules"
-    ADD CONSTRAINT "SubfolderSearchRules_SubfolderID_fkey" FOREIGN KEY ("SubfolderID")
-    REFERENCES public."Subfolder" ("ID") MATCH SIMPLE
-    ON UPDATE CASCADE
-    ON DELETE CASCADE
-    NOT VALID;
-
-
 ALTER TABLE IF EXISTS public."CrawlHistory"
     ADD CONSTRAINT "CrawlHistory_SpiderID_fkey" FOREIGN KEY ("SpiderID")
     REFERENCES public."Spider" ("ID") MATCH SIMPLE
-    ON UPDATE SET NULL
-    ON DELETE SET NULL;
+    ON UPDATE CASCADE
+    ON DELETE CASCADE;
 
 
 ALTER TABLE IF EXISTS public."WebsiteSpiderHistory"
@@ -428,5 +425,3 @@ ALTER TABLE IF EXISTS public."WebsiteSpiderHistory"
     ON DELETE CASCADE;
 CREATE INDEX IF NOT EXISTS "WebsiteSpiderHistory_pkey"
     ON public."WebsiteSpiderHistory"("ID");
-
-END;
